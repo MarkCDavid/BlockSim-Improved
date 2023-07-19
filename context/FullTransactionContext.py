@@ -2,11 +2,13 @@ import random
 import configuration
 from typing import Any, List, Tuple
 from copy import deepcopy
+from core.Network import Network
 from models.BaseTransaction import BaseTransaction
 
 class FullTransactionContext:
     
-    def __init__(self: 'FullTransactionContext') -> 'None':
+    def __init__(self: 'FullTransactionContext', network: 'Network') -> 'None':
+        self.network = network
         self.transaction_count_during_simulation = configuration.TRANSACTIONS_PER_SECOND * configuration.SIMULATION_LENGTH_IN_SECONDS
 
     def create_transactions(self: 'FullTransactionContext') -> 'None':
@@ -35,7 +37,7 @@ class FullTransactionContext:
                 continue
 
             propogated_transaction = deepcopy(transaction)
-            propogated_transaction.timestamp[1] += Network.tx_prop_delay() # FIXME
+            propogated_transaction.timestamp[1] += self.network.transaction_propogation_delay() # FIXME
             node.transactionsPool.append(propogated_transaction)
 
     def execute_transactions(self: 'FullTransactionContext', miner: 'Any', currentTime: 'float') -> 'Tuple[List[BaseTransaction], float]':
