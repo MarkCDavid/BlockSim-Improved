@@ -1,13 +1,15 @@
+from typing import List
 import Configuration
 from models.BaseBlock import BaseBlock
 from models.BaseConsensus import BaseConsensus
+from models.BaseNode import BaseNode
 
 
 class BaseIncentives:
 
-    def distribute_rewards(self: 'BaseIncentives', consensus: 'BaseConsensus'):
+    def distribute_rewards(self: 'BaseIncentives', nodes: 'List[BaseNode]', consensus: 'BaseConsensus'):
         for block in consensus.global_chain:
-            for node in Configuration.NODES:
+            for node in nodes:
                 if block.miner != node.id:
                     continue
 

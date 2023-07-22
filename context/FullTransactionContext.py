@@ -2,11 +2,12 @@ import random
 import Configuration
 from typing import Any, List, Tuple
 from copy import deepcopy
+from context.BaseTransactionContext import BaseTransactionContext
 from core.Network import Network
 from models.BaseNode import BaseNode
 from models.BaseTransaction import BaseTransaction
 
-class FullTransactionContext:
+class FullTransactionContext(BaseTransactionContext):
     
     def __init__(self: 'FullTransactionContext', nodes: 'List[BaseNode]', network: 'Network') -> 'None':
         self.nodes = nodes
@@ -42,7 +43,7 @@ class FullTransactionContext:
             propogated_transaction.timestamp[1] += self.network.transaction_propogation_delay() # FIXME
             node.transactionsPool.append(propogated_transaction)
 
-    def execute_transactions(self: 'FullTransactionContext', miner: 'Any', currentTime: 'float') -> 'Tuple[List[BaseTransaction], float]':
+    def execute_transactions(self: 'FullTransactionContext', miner: 'BaseNode', currentTime: 'float') -> 'Tuple[List[BaseTransaction], float]':
         transactions = []
         block_size = 0
 

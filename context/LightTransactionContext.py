@@ -1,11 +1,12 @@
 import random
 import Configuration
 from typing import List, Tuple
+from context.BaseTransactionContext import BaseTransactionContext
 from models.BaseNode import BaseNode
 from models.BaseTransaction import BaseTransaction
 
 
-class LightTransactionContext:
+class LightTransactionContext(BaseTransactionContext):
 
     def __init__(self: 'LightTransactionContext', nodes: 'List[BaseNode]') -> 'None':
         self.nodes = nodes
@@ -27,7 +28,7 @@ class LightTransactionContext:
         random.shuffle(self.pending_transactions)
 
 
-    def execute_transactions(self: 'LightTransactionContext') -> 'Tuple[List[BaseTransaction], float]':
+    def execute_transactions(self: 'LightTransactionContext', miner: 'BaseNode', currentTime: 'float') -> 'Tuple[List[BaseTransaction], float]':
         transactions = []
         block_size = 0
 

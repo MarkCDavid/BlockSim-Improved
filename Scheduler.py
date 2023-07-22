@@ -24,7 +24,7 @@ class Scheduler:
 
         event = Event("create_block", block.miner, event_time, block)
 
-        self.queue.add_event(event)
+        self.queue.push(event)
 
     def event__receive_block(self: 'Scheduler', recipient: 'BaseNode', block: 'BaseBlock', blockDelay: 'float') -> 'None':
         receive_block_time = block.timestamp + blockDelay
@@ -32,7 +32,7 @@ class Scheduler:
             return
         
         event = Event("receive_block", recipient.id, receive_block_time, block)
-        self.queue.add_event(event)
+        self.queue.push(event)
 
 # class Scheduler:
 

@@ -7,20 +7,33 @@ from models.BaseBlockCommit import BaseBlockCommit
 from models.BaseConsensus import BaseConsensus
 from models.BaseNode import BaseNode, generate_genesis_block, reset_nodes
 from models.BaseIncentives import BaseIncentives
+from Scheduler import Scheduler
 from Statistics import BaseStatistics
+
+
+from bitcoin.Node import Node
+from bitcoin.Consensus import Consensus
+from bitcoin.BlockCommit import BlockCommit
 
 def run():
     clock = 0
 
-#  NODES = [Node(id=0, hashPower=50), Node(
-#             id=1, hashPower=20), Node(id=2, hashPower=30)]
 
-    nodes = [BaseNode(id) for id in range(Configuration.NODE_COUNT)]
+    nodes = [Node(id=0, hashPower=50), Node(id=1, hashPower=20), Node(id=2, hashPower=30)]
+    # nodes = [BaseNode(id) for id in range(Configuration.NODE_COUNT)]
+
     queue = Queue()
-    consensus = BaseConsensus()
+
+    # consensus = BaseConsensus()
+    consensus = Consensus(nodes)
+
     incentives = BaseIncentives()
+
     network = Network()
+
     statistics = BaseStatistics(nodes, consensus)
+
+    scheduler = Scheduler(queue)
     
     if Configuration.HAS_TRANSACTIONS:
 
@@ -34,7 +47,9 @@ def run():
 
     generate_genesis_block(nodes)
 
-    block_commit = BaseBlockCommit()
+    # block_commit = BaseBlockCommit()
+
+    block_commit = BlockCommit(nodes, network, consensus, scheduler, transaction_context, statistics)
     block_commit.generate_initial_events()
 
     while queue and clock <= Configuration.SIMULATION_LENGTH_IN_SECONDS:
@@ -43,7 +58,7 @@ def run():
         block_commit.handle_event(event)
 
     consensus.fork_resolution()
-    incentives.distribute_rewards(consensus)
+    incentives.distribute_rewards(nodes, consensus)
 
     statistics.calculate()
 

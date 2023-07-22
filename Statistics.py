@@ -49,8 +49,8 @@ class BaseStatistics:
             'No. Miners': [len(self.nodes)], 
             'Simulation Time': [Configuration.SIMULATION_LENGTH_IN_SECONDS]})
 
-        df2 = pandas.DataFrame(self.blocksResults)
-        df2.columns= ['Total Blocks', 'Main Blocks', 'Uncle blocks', 'Uncle Rate', 'Stale Blocks', 'Stale Rate', '# transactions']
+        df2 = pandas.DataFrame(self.block_results)
+        df2.columns= ['Total Blocks', 'Main Blocks', 'Stale Blocks', 'Stale Rate', '# transactions']
 
         df3 = pandas.DataFrame(self.profits)
         df3.columns = ['Miner ID', '% Hash Power','# Mined Blocks', '% of main blocks','# Uncle Blocks','% of uncles', 'Profit (in ETH)']
@@ -64,7 +64,7 @@ class BaseStatistics:
         df3.to_excel(writer, sheet_name='Profit')
         df4.to_excel(writer,sheet_name='Chain')
 
-        writer.save()
+        writer.close()
 
 
     def reset_global_variables(self: 'BaseStatistics'):
