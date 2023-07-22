@@ -1,5 +1,5 @@
 import random
-import configuration
+import Configuration
 from typing import Any, List, Tuple
 from copy import deepcopy
 from core.Network import Network
@@ -9,7 +9,7 @@ class FullTransactionContext:
     
     def __init__(self: 'FullTransactionContext', network: 'Network') -> 'None':
         self.network = network
-        self.transaction_count_during_simulation = configuration.TRANSACTIONS_PER_SECOND * configuration.SIMULATION_LENGTH_IN_SECONDS
+        self.transaction_count_during_simulation = Configuration.TRANSACTIONS_PER_SECOND * Configuration.SIMULATION_LENGTH_IN_SECONDS
 
     def create_transactions(self: 'FullTransactionContext') -> 'None':
         for _ in range(self.transaction_count_during_simulation):
@@ -18,21 +18,21 @@ class FullTransactionContext:
 
             transaction.id = random.randrange(100000000000)
 
-            creation_time = random.randint(0, configuration.SIMULATION_LENGTH_IN_SECONDS - 1)
+            creation_time = random.randint(0, Configuration.SIMULATION_LENGTH_IN_SECONDS - 1)
             receive_time = creation_time
             transaction.timestamp = [creation_time, receive_time]
 
-            sender = random.choice(configuration.NODES)
+            sender = random.choice(Configuration.NODES)
             transaction.sender = sender.id
 
-            transaction.to = random.choice(configuration.NODES).id
-            transaction.size = random.expovariate(1 / configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
-            transaction.fee = random.expovariate(1 / configuration.AVERAGE_TRANSACTION_FEE)
+            transaction.to = random.choice(Configuration.NODES).id
+            transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
+            transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
 
             sender.transactionsPool.append(transaction)
 
     def propogate_transaction(self: 'FullTransactionContext', transaction: 'BaseTransaction') -> 'None':
-        for node in configuration.NODES:
+        for node in Configuration.NODES:
             if transaction.sender == node.id:
                 continue
 
@@ -48,7 +48,7 @@ class FullTransactionContext:
 
         for transaction in sorted_transactions:
             # FIXME
-            if block_size + transaction.size <= configuration.BLOCK_SIZE_IN_MB and transaction.timestamp[1] <= currentTime:
+            if block_size + transaction.size <= Configuration.BLOCK_SIZE_IN_MB and transaction.timestamp[1] <= currentTime:
                 block_size += transaction.size
                 transactions.append(transaction)
 

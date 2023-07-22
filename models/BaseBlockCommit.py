@@ -1,4 +1,4 @@
-import configuration
+import Configuration
 from core.Event import Event
 from models.BaseBlock import BaseBlock
 from models.BaseNode import BaseNode
@@ -36,7 +36,7 @@ class BaseBlockCommit:
             else:
                 targetNode.blockchain.append(sourceNode.blockchain[index])
 
-            if configuration.HAS_TRANSACTIONS and configuration.TRANSACTION_TECHNIQUE == "Full": 
+            if Configuration.HAS_TRANSACTIONS and Configuration.TRANSACTION_TECHNIQUE == "Full": 
                 self.update_transactionsPool(targetNode, targetNode.blockchain[index])
 
     

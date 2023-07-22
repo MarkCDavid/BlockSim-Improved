@@ -1,5 +1,5 @@
 import random
-import configuration
+import Configuration
 from typing import List, Tuple
 from models.BaseTransaction import BaseTransaction
 
@@ -8,7 +8,7 @@ class LightTransactionContext:
 
     def __init__(self: 'LightTransactionContext') -> 'None':
         self.pending_transactions = []
-        self.transaction_count_in_block = configuration.TRANSACTIONS_PER_SECOND * configuration.AVERAGE_BLOCK_INTERVAL_IN_SECONDS
+        self.transaction_count_in_block = Configuration.TRANSACTIONS_PER_SECOND * Configuration.AVERAGE_BLOCK_INTERVAL_IN_SECONDS
 
     def create_transactions(self: 'LightTransactionContext'):
         for _ in range(self.transaction_count_in_block):
@@ -16,10 +16,10 @@ class LightTransactionContext:
             transaction = BaseTransaction()
 
             transaction.id = random.randrange(100000000000)
-            transaction.sender = random.choice(configuration.NODES).id
-            transaction.to = random.choice(configuration.NODES).id
-            transaction.size = random.expovariate(1 / configuration.AVERAGE_TRANSACTION_FEE)
-            transaction.fee = random.expovariate(1 / configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
+            transaction.sender = random.choice(Configuration.NODES).id
+            transaction.to = random.choice(Configuration.NODES).id
+            transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
+            transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
 
             self.pending_transactions.append(transaction)
 
@@ -33,7 +33,7 @@ class LightTransactionContext:
         sorted_transactions = sorted(self.pending_transactions, key=lambda transaction: transaction.fee, reverse=True)
 
         for transaction in sorted_transactions:
-            if block_size + transaction.size <= configuration.BLOCK_SIZE_IN_MB:
+            if block_size + transaction.size <= Configuration.BLOCK_SIZE_IN_MB:
                 block_size += transaction.size
                 transactions.append(transaction)
 
