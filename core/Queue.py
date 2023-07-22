@@ -13,7 +13,7 @@ class Queue:
 
     def pop(self: 'Queue') -> 'Event':
         if not self:
-            raise IndexError("Cannot get and remove from an empty queue")
+            raise IndexError("Cannot pop from an empty queue")
         
         return self.queue.pop(0)[1]
 

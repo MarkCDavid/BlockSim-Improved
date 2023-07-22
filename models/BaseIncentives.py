@@ -3,9 +3,9 @@ from models.BaseBlock import BaseBlock
 from models.BaseConsensus import BaseConsensus
 
 
-class Incentives:
+class BaseIncentives:
 
-    def distribute_rewards(self: 'Incentives', consensus: 'BaseConsensus'):
+    def distribute_rewards(self: 'BaseIncentives', consensus: 'BaseConsensus'):
         for block in consensus.global_chain:
             for node in Configuration.NODES:
                 if block.miner != node.id:
@@ -16,5 +16,5 @@ class Incentives:
                 node.balance += self.transactions_fee(block)
 
     # FIXME: Move to the BaseBlock
-    def transactions_fee(self: 'Incentives', block: 'BaseBlock') -> 'float':
+    def transactions_fee(self: 'BaseIncentives', block: 'BaseBlock') -> 'float':
         return sum(transaction.fee for transaction in block.transactions)

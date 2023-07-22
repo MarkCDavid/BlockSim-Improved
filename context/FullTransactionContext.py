@@ -3,11 +3,13 @@ import Configuration
 from typing import Any, List, Tuple
 from copy import deepcopy
 from core.Network import Network
+from models.BaseNode import BaseNode
 from models.BaseTransaction import BaseTransaction
 
 class FullTransactionContext:
     
-    def __init__(self: 'FullTransactionContext', network: 'Network') -> 'None':
+    def __init__(self: 'FullTransactionContext', nodes: 'List[BaseNode]', network: 'Network') -> 'None':
+        self.nodes = nodes
         self.network = network
         self.transaction_count_during_simulation = Configuration.TRANSACTIONS_PER_SECOND * Configuration.SIMULATION_LENGTH_IN_SECONDS
 
@@ -22,17 +24,17 @@ class FullTransactionContext:
             receive_time = creation_time
             transaction.timestamp = [creation_time, receive_time]
 
-            sender = random.choice(Configuration.NODES)
+            sender = random.choice(self.nodes)
             transaction.sender = sender.id
 
-            transaction.to = random.choice(Configuration.NODES).id
+            transaction.to = random.choice(self.nodes).id
             transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
             transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
 
             sender.transactionsPool.append(transaction)
 
     def propogate_transaction(self: 'FullTransactionContext', transaction: 'BaseTransaction') -> 'None':
-        for node in Configuration.NODES:
+        for node in self.nodes:
             if transaction.sender == node.id:
                 continue
 

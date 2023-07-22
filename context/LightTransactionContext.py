@@ -1,23 +1,24 @@
 import random
 import Configuration
 from typing import List, Tuple
+from models.BaseNode import BaseNode
 from models.BaseTransaction import BaseTransaction
 
 
 class LightTransactionContext:
 
-    def __init__(self: 'LightTransactionContext') -> 'None':
+    def __init__(self: 'LightTransactionContext', nodes: 'List[BaseNode]') -> 'None':
+        self.nodes = nodes
         self.pending_transactions = []
         self.transaction_count_in_block = Configuration.TRANSACTIONS_PER_SECOND * Configuration.AVERAGE_BLOCK_INTERVAL_IN_SECONDS
 
     def create_transactions(self: 'LightTransactionContext'):
         for _ in range(self.transaction_count_in_block):
-            
             transaction = BaseTransaction()
 
             transaction.id = random.randrange(100000000000)
-            transaction.sender = random.choice(Configuration.NODES).id
-            transaction.to = random.choice(Configuration.NODES).id
+            transaction.sender = random.choice(self.nodes).id
+            transaction.to = random.choice(self.nodes).id
             transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
             transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
 
