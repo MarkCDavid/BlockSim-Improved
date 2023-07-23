@@ -20,8 +20,8 @@ class LightTransactionContext(BaseTransactionContext):
             transaction.id = random.randrange(100000000000)
             transaction.sender = random.choice(self.nodes).id
             transaction.to = random.choice(self.nodes).id
-            transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
-            transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
+            transaction.size = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_SIZE_IN_MB)
+            transaction.fee = random.expovariate(1 / Configuration.AVERAGE_TRANSACTION_FEE)
 
             self.pending_transactions.append(transaction)
 
@@ -35,7 +35,7 @@ class LightTransactionContext(BaseTransactionContext):
         sorted_transactions = sorted(self.pending_transactions, key=lambda transaction: transaction.fee, reverse=True)
 
         for transaction in sorted_transactions:
-            if block_size + transaction.size <= Configuration.BLOCK_SIZE_IN_MB:
+            if block_size + transaction.size < Configuration.BLOCK_SIZE_IN_MB:
                 block_size += transaction.size
                 transactions.append(transaction)
 

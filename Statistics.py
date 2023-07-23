@@ -35,9 +35,9 @@ class BaseStatistics:
             node_index = self.index + node.id * Configuration.SIMULATION_RUNS
 
             self.profits[node_index][0] = node.id
-            self.profits[node_index][2]= node.blocks
-            self.profits[node_index][3]= round(node.blocks / self.main_blocks * 100, 2)
-            self.profits[node_index][6]= node.balance
+            self.profits[node_index][2] = node.blocks
+            self.profits[node_index][3] = round(node.blocks / self.main_blocks * 100, 2)
+            self.profits[node_index][6] = node.balance
 
         self.index += 1
 

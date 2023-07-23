@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 import Configuration
 from context.LightTransactionContext import LightTransactionContext
 from context.FullTransactionContext import FullTransactionContext
@@ -52,10 +54,17 @@ def run():
     block_commit = BlockCommit(nodes, network, consensus, scheduler, transaction_context, statistics)
     block_commit.generate_initial_events()
 
+    time_progress_bar = tqdm(total=Configuration.SIMULATION_LENGTH_IN_SECONDS, desc="Clock", leave=False)
     while queue and clock <= Configuration.SIMULATION_LENGTH_IN_SECONDS:
         event = queue.pop()
         clock = event.time
+
+        time_progress_bar.n = int(clock)
+        time_progress_bar.refresh()
+
         block_commit.handle_event(event)
+        
+    time_progress_bar.close() 
 
     consensus.fork_resolution()
     incentives.distribute_rewards(nodes, consensus)
@@ -67,14 +76,19 @@ def run():
     reset_nodes(nodes)
 
     filename = "(Allverify)1day_{0}M_{1}K.xlsx".format(Configuration.BLOCK_SIZE_IN_MB/1000000, Configuration.TRANSACTIONS_PER_SECOND/1000)
+    filename = "mine.xlsx"
 
     statistics.print_to_excel(filename)
 
     statistics.reset_profit_results()  
 
 def main():
+    runs_progress_bar = tqdm(total=Configuration.SIMULATION_RUNS, desc="Runs")
     for run_index in range(Configuration.SIMULATION_RUNS):
+       runs_progress_bar.n = int(run_index + 1)
+       runs_progress_bar.refresh()
        run()
+    runs_progress_bar.close()
 
 if __name__ == '__main__':
     main()

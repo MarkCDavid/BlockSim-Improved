@@ -18,6 +18,7 @@ class Consensus(BaseConsensus):
         return random.expovariate(hashPower * 1 / Configuration.AVERAGE_BLOCK_INTERVAL_IN_SECONDS)
 
     def fork_resolution(self: 'Consensus'):
+        
         max_blockchain_length = max(node.blockchain_length() for node in self.nodes)
 
         miners_with_blockchains_of_max_length = [
@@ -40,3 +41,4 @@ class Consensus(BaseConsensus):
         for miner in self.nodes:
             if miner.blockchain_length() == max_blockchain_length and miner.last_block().miner == miner_with_blockchain_of_max_length:
                 self.global_chain = miner.blockchain.copy()
+                break
